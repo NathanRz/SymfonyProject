@@ -2,6 +2,9 @@
 
 namespace OC\PlatformBundle\Repository;
 
+use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\QueryBuilder;
+
 /**
  * AdvertRepository
  *
@@ -10,4 +13,26 @@ namespace OC\PlatformBundle\Repository;
  */
 class AdvertRepository extends \Doctrine\ORM\EntityRepository
 {
+	public function whereCurrentYear(QueryBuilder $qb){
+		$qb
+		->andWhere('a.date BETWEEN :start AND :end')
+		->setParameter('start', new \DateTime(date('Y').'-01-01'))
+		->setParameter('end', new \DateTime(date('Y').'-12-31'));
+	}
+
+	public function findByAuthor($author){
+		$qb = $this->createQueryBuilder('a');
+
+		$qb
+		->where('a.author = :author')
+		->setParameter('author', $author);
+
+		$this->whereCurrentYear($qb);
+
+		$qb->orderBy('a.date', 'DESC');
+
+		return $qb
+			->getQuery()
+			->getResult();
+	}
 }
