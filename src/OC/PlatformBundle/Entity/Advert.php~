@@ -59,6 +59,11 @@ class Advert
     */
     private $published = true;
 
+    /**
+    * @ORM\ManyToMany(targetEntity="OC\PlatformBundle\Entity\Category", cascade={"persist"})
+    */
+    private $categories;
+
     public function __construct(){
         $this->date = new \Datetime();
     }
