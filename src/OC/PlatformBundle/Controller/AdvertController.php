@@ -23,26 +23,6 @@ class AdvertController extends Controller
     $em = $this->getDoctrine()->getManager();
     
     $listAdverts = $em->getRepository('OCPlatformBundle:Advert')->findAll();
-    /*$listAdverts = array(
-      array(
-        'title'   => 'Recherche développpeur Symfony',
-        'id'      => 1,
-        'author'  => 'Alexandre',
-        'content' => 'Nous recherchons un développeur Symfony débutant sur Lyon. Blabla…',
-        'date'    => new \Datetime()),
-      array(
-        'title'   => 'Mission de webmaster',
-        'id'      => 2,
-        'author'  => 'Hugo',
-        'content' => 'Nous recherchons un webmaster capable de maintenir notre site internet. Blabla…',
-        'date'    => new \Datetime()),
-      array(
-        'title'   => 'Offre de stage webdesigner',
-        'id'      => 3,
-        'author'  => 'Mathieu',
-        'content' => 'Nous proposons un poste pour webdesigner. Blabla…',
-        'date'    => new \Datetime())
-    );*/
 
     // Ici, on récupérera la liste des annonces, puis on la passera au template
 
@@ -119,13 +99,17 @@ class AdvertController extends Controller
 
   public function editAction($id, Request $request)
   {
-    $advert = array(
-      'title'   => 'Recherche développpeur Symfony',
-      'id'      => $id,
-      'author'  => 'Alexandre',
-      'content' => 'Nous recherchons un développeur Symfony débutant sur Lyon. Blabla…',
-      'date'    => new \Datetime()
-    );
+    $em = $this->getDoctrine()->getManager();
+
+    $advert = $em->getRepository('OCPlatformBundle:Advert')->find($id);
+
+    $listCategories = $em->getRepository('OCPlatformBundle:Category')->findAll();
+
+    foreach ($listCategories as $cat) {
+      $advert->addCategory($cat);
+    }
+
+    $em->flush();
 
     return $this->render('OCPlatformBundle:Advert:edit.html.twig', array(
       'advert' => $advert
@@ -134,9 +118,16 @@ class AdvertController extends Controller
 
   public function deleteAction($id)
   {
-    // Ici, on récupérera l'annonce correspondant à $id
+    
+    $em = $this->getDoctrine()->getManager();
 
-    // Ici, on gérera la suppression de l'annonce en question
+    $advert = $em->getRepository('OCPlatformBundle:Advert')->find($id);
+
+    foreach ($advert->getCategories() as $cat) {
+      $advert->removeCategory($cat);
+    }
+
+    $em->flush();
 
     return $this->render('OCPlatformBundle:Advert:delete.html.twig');
   }
