@@ -3,7 +3,9 @@
 // src/OC/PlatformBundle/Controller/AdvertController.php
 
 namespace OC\PlatformBundle\Controller;
-
+use OC\PlatformBundle\Entity\Advert;
+use OC\PlatformBundle\Entity\Image;
+use OC\PlatformBundle\Entity\Comment;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -18,7 +20,10 @@ class AdvertController extends Controller
       throw new NotFoundHttpException('Page "'.$page.'" inexistante.');
     }
 
-    $listAdverts = array(
+    $em = $this->getDoctrine()->getManager();
+    
+    $listAdverts = $em->getRepository('OCPlatformBundle:Advert')->findAll();
+    /*$listAdverts = array(
       array(
         'title'   => 'Recherche développpeur Symfony',
         'id'      => 1,
@@ -37,7 +42,7 @@ class AdvertController extends Controller
         'author'  => 'Mathieu',
         'content' => 'Nous proposons un poste pour webdesigner. Blabla…',
         'date'    => new \Datetime())
-    );
+    );*/
 
     // Ici, on récupérera la liste des annonces, puis on la passera au template
 
@@ -47,21 +52,55 @@ class AdvertController extends Controller
 
   public function viewAction($id)
   {
-    $advert = array(
-      'title'   => 'Recherche développpeur Symfony2',
-      'id'      => $id,
-      'author'  => 'Alexandre',
-      'content' => 'Nous recherchons un développeur Symfony2 débutant sur Lyon. Blabla…',
-      'date'    => new \Datetime()
-    );
+    $em = $this->getDoctrine()->getManager();
+    
+    $advert = $em->getRepository('OCPlatformBundle:Advert')->find($id);
+
+    $listComments = $em->getRepository('OCPlatformBundle:Comment')->findBy(array('advert' => $advert));
+
+    if(null === $advert){
+      throw new NotFoundHttpException("L'annonce d'id " .$id. " n'existe pas.");
+    }
 
     return $this->render('OCPlatformBundle:Advert:view.html.twig', array(
-      'advert' => $advert
+      'advert' => $advert,
+      'listComments' => $listComments
     ));
   }
 
   public function addAction(Request $request)
   {
+
+    $advert = new Advert();
+    $advert->setTitle('Recherche développeur Symfony');
+    $advert->setAuthor('Alexandre');
+    $advert->setContent("Nous recherchons un développeur Symfony débutant sur Lyon.");
+
+    $image = new Image();
+    $image->setUrl('http://sdz-upload.s3.amazonaws.com/prod/upload/job-de-reve.jpg');
+    $image->setAlt('Job de rêve');
+
+    $comment1 = new Comment();
+    $comment1->setContent("Ca m'interesse !");
+    $comment1->setAuthor("Philipe");
+    $comment1->setDate(new \DateTime);
+    $comment1->setAdvert($advert);
+
+    $comment2 = new Comment();
+    $comment2->setContent("Très intéressant");
+    $comment2->setAuthor("Dupont");
+    $comment2->setDate(new \DateTime);
+    $comment2->setAdvert($advert);
+
+    $advert->setImage($image);
+
+    $em = $this->getDoctrine()->getManager();
+
+    $em->persist($advert);
+    $em->persist($comment1);
+    $em->persist($comment2);
+    $em->flush();
+
     // La gestion d'un formulaire est particulière, mais l'idée est la suivante :
 
     // Si la requête est en POST, c'est que le visiteur a soumis le formulaire
