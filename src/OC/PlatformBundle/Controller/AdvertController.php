@@ -31,6 +31,10 @@ class AdvertController extends Controller
     
     $advert = $em->getRepository('OCPlatformBundle:Advert')->getAdvertWithComments($id);
 
+    $advert->setContent($advert->getContent() . " !Test edition");
+
+    $em->flush();
+
     if(null === $advert){
       throw new NotFoundHttpException("L'annonce d'id " .$id. " n'existe pas.");
     }
@@ -56,13 +60,13 @@ class AdvertController extends Controller
     $comment1 = new Comment();
     $comment1->setContent("Ca m'interesse !");
     $comment1->setAuthor("Philipe");
-    $comment1->setDate(new \DateTime);
+    $comment1->setDate(new \DateTime());
     $comment1->setAdvert($advert);
 
     $comment2 = new Comment();
     $comment2->setContent("Très intéressant");
     $comment2->setAuthor("Dupont");
-    $comment2->setDate(new \DateTime);
+    $comment2->setDate(new \DateTime());
     $comment2->setAdvert($advert);
 
     $advert->setImage($image);

@@ -154,4 +154,19 @@ class Comment
     {
         return $this->advert;
     }
+
+    /**
+    * @ORM\PrePersist
+    */
+    public function increase(){
+        $this->getAdvert()->increaseComments();
+    }
+
+    /**
+    * @ORM\PreRemove
+    */
+    public function decrease(){
+        $this->getAdvert()->decreaseComments();
+    }
+
 }

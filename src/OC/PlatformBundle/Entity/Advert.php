@@ -10,6 +10,7 @@ use Doctrine\Common\Collections\ArrayCollection;
  *
  * @ORM\Table(name="advert")
  * @ORM\Entity(repositoryClass="OC\PlatformBundle\Repository\AdvertRepository")
+ * @ORM\HasLifecycleCallbacks()
  */
 class Advert
 {
@@ -69,6 +70,16 @@ class Advert
     * @ORM\OneToMany(targetEntity="OC\PlatformBundle\Entity\Comment", mappedBy="advert")
     */
     private $comments;
+
+    /**
+    * @ORM\Column(name="updated_at", type="datetime", nullable=true)
+    */
+    private $updatedAt;
+
+    /**
+    * @ORM\Column(name="nbComments", type="integer")
+    */
+    private $nbComments = 0;
 
     public function __construct(){
         $this->date = new \Datetime();
@@ -279,5 +290,68 @@ class Advert
     public function getComments()
     {
         return $this->comments;
+    }
+
+    /**
+     * Set updatedAt
+     *
+     * @param \DateTime $updatedAt
+     *
+     * @return Advert
+     */
+    public function setUpdatedAt($updatedAt)
+    {
+        $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    /**
+     * Get updatedAt
+     *
+     * @return \DateTime
+     */
+    public function getUpdatedAt()
+    {
+        return $this->updatedAt;
+    }
+
+    /**
+    * @ORM\PreUpdate
+    */
+    public function updateDate(){
+        $this->setUpdatedAt(new \Datetime());
+    }
+
+    /**
+     * Set nbComments
+     *
+     * @param integer $nbComments
+     *
+     * @return Advert
+     */
+    public function setNbComments($nbComments)
+    {
+        $this->nbComments = $nbComments;
+
+        return $this;
+    }
+
+    /**
+     * Get nbComments
+     *
+     * @return integer
+     */
+    public function getNbComments()
+    {
+        return $this->nbComments;
+    }
+
+    public function increaseComments(){
+        $this->nbComments++;
+    }
+
+    public function decreaseComments(){
+        $this->nbComments--;
     }
 }
