@@ -31,6 +31,25 @@ class AdvertRepository extends \Doctrine\ORM\EntityRepository
 
 		$qb->orderBy('a.date', 'DESC');
 
+		return $qb->getQuery()->getResult();
+	}
+
+	public function getAdvertWithComments($id){
+		$qb = $this->createQueryBuilder('a')->leftJoin('a.comments', 'com')->addSelect('com');
+
+		$qb->andWhere('a.id = :id')->setParameter('id', $id);
+
+		return $qb->getQuery()->getSingleResult();
+	}
+
+	public function getAdvertWithCategories(array $catNames){
+		$qb = $this
+			->createQueryBuilder('a')
+			->innerJoin('a.categories', 'c')
+			->addSelect('c');
+
+		$qb->where($qb->expr()->in('c.name', $catNames));
+
 		return $qb
 			->getQuery()
 			->getResult();

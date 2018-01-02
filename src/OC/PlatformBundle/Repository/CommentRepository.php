@@ -2,6 +2,7 @@
 
 namespace OC\PlatformBundle\Repository;
 
+use Doctrine\ORM\EntityRepository;
 /**
  * CommentRepository
  *
@@ -10,4 +11,18 @@ namespace OC\PlatformBundle\Repository;
  */
 class CommentRepository extends \Doctrine\ORM\EntityRepository
 {
+
+	public function getCommentsWithAdvert($limit){
+		$qb = $this->createQueryBuilder('co');
+
+		$qb
+			->innerJoin('co.advert', 'adv')
+			->addSelect('adv');
+
+		$qb->setMaxResults($limit);
+
+		return $qb
+			->getQuery()
+			->getResult();
+	}
 }

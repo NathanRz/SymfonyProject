@@ -65,6 +65,11 @@ class Advert
     */
     private $categories;
 
+    /**
+    * @ORM\OneToMany(targetEntity="OC\PlatformBundle\Entity\Comment", mappedBy="advert")
+    */
+    private $comments;
+
     public function __construct(){
         $this->date = new \Datetime();
         $this->categories = new ArrayCollection();
@@ -240,5 +245,39 @@ class Advert
     public function getCategories()
     {
         return $this->categories;
+    }
+
+    /**
+     * Add comment
+     *
+     * @param \OC\PlatformBundle\Entity\Comment $comment
+     *
+     * @return Advert
+     */
+    public function addComment(\OC\PlatformBundle\Entity\Comment $comment)
+    {
+        $this->comments[] = $comment;
+
+        return $this;
+    }
+
+    /**
+     * Remove comment
+     *
+     * @param \OC\PlatformBundle\Entity\Comment $comment
+     */
+    public function removeComment(\OC\PlatformBundle\Entity\Comment $comment)
+    {
+        $this->comments->removeElement($comment);
+    }
+
+    /**
+     * Get comments
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getComments()
+    {
+        return $this->comments;
     }
 }

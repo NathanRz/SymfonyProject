@@ -15,8 +15,6 @@ class AdvertController extends Controller
   public function indexAction($page)
   {
     if ($page < 1) {
-      // On déclenche une exception NotFoundHttpException, cela va afficher
-      // une page d'erreur 404 (qu'on pourra personnaliser plus tard d'ailleurs)
       throw new NotFoundHttpException('Page "'.$page.'" inexistante.');
     }
 
@@ -24,9 +22,6 @@ class AdvertController extends Controller
     
     $listAdverts = $em->getRepository('OCPlatformBundle:Advert')->findAll();
 
-    // Ici, on récupérera la liste des annonces, puis on la passera au template
-
-    // Mais pour l'instant, on ne fait qu'appeler le template
    	return $this->render('OCPlatformBundle:Advert:index.html.twig', array('listAdverts' => $listAdverts));
   }
 
@@ -34,9 +29,7 @@ class AdvertController extends Controller
   {
     $em = $this->getDoctrine()->getManager();
     
-    $advert = $em->getRepository('OCPlatformBundle:Advert')->find($id);
-
-    $listComments = $em->getRepository('OCPlatformBundle:Comment')->findBy(array('advert' => $advert));
+    $advert = $em->getRepository('OCPlatformBundle:Advert')->getAdvertWithComments($id);
 
     if(null === $advert){
       throw new NotFoundHttpException("L'annonce d'id " .$id. " n'existe pas.");
@@ -44,7 +37,7 @@ class AdvertController extends Controller
 
     return $this->render('OCPlatformBundle:Advert:view.html.twig', array(
       'advert' => $advert,
-      'listComments' => $listComments
+      'listComments' => $advert->getComments()
     ));
   }
 
