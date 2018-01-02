@@ -2,3 +2,14 @@ services:
 #    oc_platform.example:
 #        class: OC\PlatformBundle\Example
 #        arguments: ["@service_id", "plain_value", "%parameter%"]
+     oc_platform.email.advert_mailer:
+        class: OC\PlatformBundle\Email\AdvertMailer
+        arguments:
+            - "@mailer"
+            
+     oc_platform.doctrine_listener.advert_creation:
+        class: OC\PlatformBundle\DoctrineListener\AdvertCreationListener
+        arguments:
+          - "@oc_platform.email.advert_mailer"
+        tags:
+          - { name: doctrine.event_listener, event: postPersist }
