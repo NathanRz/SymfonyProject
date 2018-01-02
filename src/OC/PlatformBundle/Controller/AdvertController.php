@@ -18,11 +18,23 @@ class AdvertController extends Controller
       throw new NotFoundHttpException('Page "'.$page.'" inexistante.');
     }
 
+    $nbPerPages = 3;
+
     $em = $this->getDoctrine()->getManager();
     
-    $listAdverts = $em->getRepository('OCPlatformBundle:Advert')->findAll();
+    $listAdverts = $em->getRepository('OCPlatformBundle:Advert')->getAdverts($page,$nbPerPages);
 
-   	return $this->render('OCPlatformBundle:Advert:index.html.twig', array('listAdverts' => $listAdverts));
+    $nbPages = ceil(count($listAdverts) / $nbPerPages);
+
+    if($page > $nbPages){
+      throw $this->createNotFoundException("La page " . $page);
+    }
+
+   	return $this->render('OCPlatformBundle:Advert:index.html.twig', array(
+      'listAdverts' => $listAdverts,
+      'nbPages' => $nbPages,
+      'page' => $page
+    ));
   }
 
   public function viewAction($id)
