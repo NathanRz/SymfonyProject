@@ -10,6 +10,13 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\FormType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+
 class AdvertController extends Controller
 {
   public function indexAction($page)
@@ -43,10 +50,6 @@ class AdvertController extends Controller
     
     $advert = $em->getRepository('OCPlatformBundle:Advert')->getAdvertWithComments($id);
 
-    $advert->setContent($advert->getContent() . " !Test edition");
-
-    $em->flush();
-
     if(null === $advert){
       throw new NotFoundHttpException("L'annonce d'id " .$id. " n'existe pas.");
     }
@@ -61,49 +64,36 @@ class AdvertController extends Controller
   {
 
     $advert = new Advert();
-    $advert->setTitle('Recherche développeur Symfony');
-    $advert->setAuthor('Alexandre');
-    $advert->setContent("Nous recherchons un développeur Symfony débutant sur Lyon.");
+    $advert->setDate(new \Datetime());
 
-    $image = new Image();
-    $image->setUrl('http://sdz-upload.s3.amazonaws.com/prod/upload/job-de-reve.jpg');
-    $image->setAlt('Job de rêve');
+    $formBuilder = $this->get('form.factory')->createBuilder(FormType::class, $advert);
 
-    $comment1 = new Comment();
-    $comment1->setContent("Ca m'interesse !");
-    $comment1->setAuthor("Philipe");
-    $comment1->setDate(new \DateTime());
-    $comment1->setAdvert($advert);
+    $formBuilder
+      ->add('date',     DateType::class)
+      ->add('title',    TextType::class)
+      ->add('content',  TextareaType::class)
+      ->add('author',   TextType::class)
+      ->add('published',CheckboxType::class, array('required' => false))
+      ->add('save',     SubmitType::class);
 
-    $comment2 = new Comment();
-    $comment2->setContent("Très intéressant");
-    $comment2->setAuthor("Dupont");
-    $comment2->setDate(new \DateTime());
-    $comment2->setAdvert($advert);
 
-    $advert->setImage($image);
+    $form = $formBuilder->getForm();
 
-    $em = $this->getDoctrine()->getManager();
-
-    $em->persist($advert);
-    $em->persist($comment1);
-    $em->persist($comment2);
-    $em->flush();
-
-    // La gestion d'un formulaire est particulière, mais l'idée est la suivante :
-
-    // Si la requête est en POST, c'est que le visiteur a soumis le formulaire
     if ($request->isMethod('POST')) {
-      // Ici, on s'occupera de la création et de la gestion du formulaire
+    
+      $form->handleRequest($request);
 
+      if($form->isValid()){
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($advert);
+        $em->flush();
+      }
       $request->getSession()->getFlashBag()->add('notice', 'Annonce bien enregistrée.');
 
-      // Puis on redirige vers la page de visualisation de cettte annonce
-      return $this->redirectToRoute('oc_platform_view', array('id' => 5));
+      return $this->redirectToRoute('oc_platform_view', array('id' => $advert->getId()));
     }
 
-    // Si on n'est pas en POST, alors on affiche le formulaire
-    return $this->render('OCPlatformBundle:Advert:add.html.twig');
+    return $this->render('OCPlatformBundle:Advert:add.html.twig', array('form' => $form->createView()));
   }
 
   public function editAction($id, Request $request)
@@ -111,17 +101,45 @@ class AdvertController extends Controller
     $em = $this->getDoctrine()->getManager();
 
     $advert = $em->getRepository('OCPlatformBundle:Advert')->find($id);
+    $formBuilder = $this->get('form.factory')->createBuilder(FormType::class, $advert);
 
-    $listCategories = $em->getRepository('OCPlatformBundle:Category')->findAll();
+    $formBuilder
+      ->add('date',     DateType::class)
+      ->add('title',    TextType::class)
+      ->add('content',  TextareaType::class)
+      ->add('author',   TextType::class)
+      ->add('published',CheckboxType::class, array('required' => false))
+      ->add('save',     SubmitType::class);
 
-    foreach ($listCategories as $cat) {
-      $advert->addCategory($cat);
+
+    $form = $formBuilder->getForm();
+
+    if ($request->isMethod('POST')) {
+    
+      $form->handleRequest($request);
+
+      if($form->isValid()){
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($advert);
+        $em->flush();
+      }
+      $request->getSession()->getFlashBag()->add('notice', 'Annonce bien modifiée.');
+
+      return $this->redirectToRoute('oc_platform_view', array('id' => $advert->getId()));
     }
 
-    $em->flush();
+    if(empty($advert->getCategories())){
+      $listCategories = $em->getRepository('OCPlatformBundle:Category')->findAll();
+
+      foreach ($listCategories as $cat) {
+        $advert->addCategory($cat);
+      }
+      $em->flush();
+    }
 
     return $this->render('OCPlatformBundle:Advert:edit.html.twig', array(
-      'advert' => $advert
+      'advert' => $advert,
+      'form' => $form->createView()
     ));
   }
 

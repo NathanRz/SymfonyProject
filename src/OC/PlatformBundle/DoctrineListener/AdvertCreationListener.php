@@ -24,7 +24,7 @@ class AdvertCreationListener{
 			return;
 		}
 
-		$this->advertMailer->sendNewNotification($entity);
+		//$this->advertMailer->sendNewNotification($entity);
 	}
 
 }

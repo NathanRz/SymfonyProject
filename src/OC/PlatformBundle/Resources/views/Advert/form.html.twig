@@ -2,8 +2,40 @@
 
 <h3>Formulaire d'annonce</h3>
 
-{# On laisse vide la vue pour l'instant, on la comblera plus tard
-   lorsqu'on saura afficher un formulaire. #}
 <div class="well">
-  Ici se trouvera le formulaire.
+	{{ form_start(form, {'attr': {'class': 'form-horizontal'}}) }}
+
+	{{ form_errors(form) }}
+
+	{{ form_label(form.date, "Date de l'annonce") }}
+	{{ form_errors(form) }}
+	{{ form_widget(form.date) }}
+
+
+
+	{{ form_label(form.title, "Titre de l'annonce") }}
+	{{ form_errors(form.title) }}
+	{{ form_widget(form.title) }}
+
+
+
+
+	{{ form_label(form.content, "Contenu de l'annonce") }}
+	{{ form_errors(form.content) }}
+
+	{{ form_widget(form.content) }}
+
+	{{ form_label(form.author, "Auteur") }}
+	{{ form_errors(form.author) }}
+	{{ form_widget(form.author) }}
+	
+	{{ form_label(form.published) }}
+	{{ form_errors(form.published) }}
+	{{ form_widget(form.published) }}
+
+	{{ form_widget(form.save, {'attr': {'class': 'btn btn-primary'}}) }}
+
+	{{ form_rest(form) }}
+
+	{{ form_end(form) }}
 </div>

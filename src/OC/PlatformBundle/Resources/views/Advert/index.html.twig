@@ -12,7 +12,9 @@
 
   <ul>
     {% for advert in listAdverts %}
-      <li><img style="width:25%" src="{{ advert.image.url }}" alt="{{ advert.image.alt }}">
+      <li>{% if advert.image != null %} 
+        <img style="width:25%" src="{{ advert.image.url }}" alt="{{ advert.image.alt }}">
+      {% endif %}
         <a href="{{ path('oc_platform_view', {'id': advert.id}) }}">
           {{ advert.title }}
         </a>
