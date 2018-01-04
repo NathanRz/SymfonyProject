@@ -6,16 +6,13 @@ namespace OC\PlatformBundle\Controller;
 use OC\PlatformBundle\Entity\Advert;
 use OC\PlatformBundle\Entity\Image;
 use OC\PlatformBundle\Entity\Comment;
+
+use OC\PlatformBundle\Form\AdvertType;
+
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
-use Symfony\Component\Form\Extension\Core\Type\DateType;
-use Symfony\Component\Form\Extension\Core\Type\FormType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 class AdvertController extends Controller
 {
@@ -66,18 +63,7 @@ class AdvertController extends Controller
     $advert = new Advert();
     $advert->setDate(new \Datetime());
 
-    $formBuilder = $this->get('form.factory')->createBuilder(FormType::class, $advert);
-
-    $formBuilder
-      ->add('date',     DateType::class)
-      ->add('title',    TextType::class)
-      ->add('content',  TextareaType::class)
-      ->add('author',   TextType::class)
-      ->add('published',CheckboxType::class, array('required' => false))
-      ->add('save',     SubmitType::class);
-
-
-    $form = $formBuilder->getForm();
+    $form = $this->get('form.factory')->create(AdvertType::class, $advert);
 
     if ($request->isMethod('POST')) {
     
@@ -101,18 +87,7 @@ class AdvertController extends Controller
     $em = $this->getDoctrine()->getManager();
 
     $advert = $em->getRepository('OCPlatformBundle:Advert')->find($id);
-    $formBuilder = $this->get('form.factory')->createBuilder(FormType::class, $advert);
-
-    $formBuilder
-      ->add('date',     DateType::class)
-      ->add('title',    TextType::class)
-      ->add('content',  TextareaType::class)
-      ->add('author',   TextType::class)
-      ->add('published',CheckboxType::class, array('required' => false))
-      ->add('save',     SubmitType::class);
-
-
-    $form = $formBuilder->getForm();
+    $form = $this->get('form.factory')->create(AdvertType::class, $advert);
 
     if ($request->isMethod('POST')) {
     
