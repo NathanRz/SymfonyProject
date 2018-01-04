@@ -103,15 +103,6 @@ class AdvertController extends Controller
       return $this->redirectToRoute('oc_platform_view', array('id' => $advert->getId()));
     }
 
-    if(empty($advert->getCategories())){
-      $listCategories = $em->getRepository('OCPlatformBundle:Category')->findAll();
-
-      foreach ($listCategories as $cat) {
-        $advert->addCategory($cat);
-      }
-      $em->flush();
-    }
-
     return $this->render('OCPlatformBundle:Advert:edit.html.twig', array(
       'advert' => $advert,
       'form' => $form->createView()

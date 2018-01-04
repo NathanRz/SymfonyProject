@@ -12,6 +12,9 @@ use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+use OC\PlatformBundle\Form\ImageType;
+use OC\PlatformBundle\Form\CategoryType;
 
 class AdvertType extends AbstractType
 {
@@ -26,6 +29,12 @@ class AdvertType extends AbstractType
             ->add('content',  TextareaType::class)
             ->add('author',   TextType::class)
             ->add('published',CheckboxType::class, array('required' => false))
+            ->add('image',    ImageType::class)
+            ->add('categories', CollectionType::class, array(
+                'entry_type'    => CategoryType::class,
+                'allow_add'     => true,
+                'allow_delete'  => true
+            ))
             ->add('save',     SubmitType::class);
     }
 
