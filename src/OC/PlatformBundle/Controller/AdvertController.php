@@ -13,6 +13,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 class AdvertController extends Controller
 {
@@ -30,7 +31,7 @@ class AdvertController extends Controller
 
     $nbPages = ceil(count($listAdverts) / $nbPerPages);
 
-    if($page > $nbPages){
+    if($page > $nbPages && !count($listAdverts) == 0){
       throw $this->createNotFoundException("La page " . $page);
     }
 
@@ -56,7 +57,9 @@ class AdvertController extends Controller
       'listComments' => $advert->getComments()
     ));
   }
-
+  /**
+  * @Security("has_role('ROLE_AUTHOR')")
+  */
   public function addAction(Request $request)
   {
 

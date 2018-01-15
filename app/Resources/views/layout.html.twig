@@ -15,6 +15,15 @@
 </head>
 
 <body>
+
+  {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+    Connecté en tant que {{ app.user.username }}
+    -
+    <a href="{{ path('fos_user_security_logout') }}">Déconnexion</a>
+  {% else %}
+      <a href="{{ path('fos_user_security_login') }}">Connexion</a>
+      <a href="{{ path('fos_user_registration_register') }}">S'inscrire</a>
+  {% endif %}
   <div class="container">
     <div id="header" class="jumbotron">
       <h1>Le mauvais coin</h1>
@@ -26,7 +35,9 @@
         <h3>Les annonces</h3>
         <ul class="nav nav-pills nav-stacked">
           <li><a href="{{ path('oc_platform_home') }}">Accueil</a></li>
-          <li><a href="{{ path('oc_platform_add') }}">Ajouter une annonce</a></li>
+          {% if is_granted('ROLE_AUTHOR') %}
+            <li><a href="{{ path('oc_platform_add') }}">Ajouter une annonce</a></li>
+          {% endif %}
         </ul>
 
         <h4>Dernières annonces</h4>
