@@ -18,13 +18,16 @@
   <img src="{{ advert.image.url }}" alt="{{ advert.image.alt }}">
 {% endif %}
   </div>
+  
+
+ 
 
   <p>
     <a href="{{ path('oc_platform_home') }}" class="btn btn-default">
       <i class="glyphicon glyphicon-chevron-left"></i>
       Retour à la liste
     </a>
-    {% if is_granted('ROLE_ADMIN') or app.user.username == advert.author %}
+    {% if is_granted('IS_AUTHENTICATED_REMEMBERED') and (is_granted('ROLE_ADMIN') or app.user.username == advert.author) %}
       <a href="{{ path('oc_platform_edit', {'id': advert.id}) }}" class="btn btn-default">
         <i class="glyphicon glyphicon-edit"></i>
         Modifier l'annonce
@@ -46,11 +49,21 @@
       {% endfor %}
     </p>
   {% endif %}
-  
-  {% for com in listComments %}
-    <div>
-      {{ com.content }} - {{ com.author }}
-    </div>
-  {% endfor %}
+
+  {% if listComments is not empty %}
+      {% for c in listComments %}
+        <div class="well">
+          <p>{{c.content}} - {{c.author}}</p>
+        </div>
+      {% endfor %}
+    {% else %}
+      <div class="well">
+        <p>Pas de commentaires pour le moment</p>
+      </div>
+  {% endif %}
+
+  {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+  {{ include("OCPlatformBundle:Advert:formComment.html.twig")}}
+  {% endif %}
 
 {% endblock %}

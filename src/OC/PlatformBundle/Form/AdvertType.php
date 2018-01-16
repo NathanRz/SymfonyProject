@@ -28,7 +28,6 @@ class AdvertType extends AbstractType
             ->add('date',     DateType::class)
             ->add('title',    TextType::class)
             ->add('content',  TextareaType::class)
-            ->add('author',   HiddenType::class)
             ->add('published',CheckboxType::class, array('required' => false))
             ->add('image',    ImageType::class)
             ->add('categories', CollectionType::class, array(

@@ -1,0 +1,14 @@
+<h3>Commenter</h3>
+
+<div class="well">
+	{{ form_start(form, {'attr': {'class': 'form-horizontal'}}) }}
+
+	{{ form_label(form.content, "Contenu du commentaire") }}
+	{{ form_errors(form.content) }}
+
+	{{ form_widget(form.content) }}
+	<br />
+
+	{{ form_widget(form.Send, {'attr': {'class': 'btn btn-primary'}}) }}
+
+	{{ form_end(form) }}

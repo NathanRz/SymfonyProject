@@ -8,6 +8,7 @@ use OC\PlatformBundle\Entity\Image;
 use OC\PlatformBundle\Entity\Comment;
 
 use OC\PlatformBundle\Form\AdvertType;
+use OC\PlatformBundle\Form\CommentType;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
@@ -42,19 +43,49 @@ class AdvertController extends Controller
     ));
   }
 
-  public function viewAction($id)
+  public function viewAction($id, Request $request)
   {
     $em = $this->getDoctrine()->getManager();
     
     $advert = $em->getRepository('OCPlatformBundle:Advert')->getAdvertWithComments($id);
+    
+    $comment = new Comment();
+    $comment->setDate(new \Datetime);
+    $comment->setAdvert($advert);
+    if($this->getUser() !== null ){
+      var_dump("hello");
+      $comment->setAuthor($this->getUser()->getUsername());
+      $form = $this->get('form.factory')->create(CommentType::class, $comment);
+    }
+
+    if ($request->isMethod('POST')) {
+    
+      $form->handleRequest($request);
+
+      if($form->isValid()){
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($comment);
+        $em->flush();
+      }
+      $request->getSession()->getFlashBag()->add('notice', 'Votre commentaire a été ajouté.');
+
+      return $this->redirectToRoute('oc_platform_view', array('id' => $advert->getId()));
+    }
 
     if(null === $advert){
       throw new NotFoundHttpException("L'annonce d'id " .$id. " n'existe pas.");
     }
 
+    if($this->getUser() !== null){
+      return $this->render('OCPlatformBundle:Advert:view.html.twig', array(
+        'advert' => $advert,
+        'listComments' => $advert->getComments(),
+        'form' => $form->createView()
+    ));
+    }    
     return $this->render('OCPlatformBundle:Advert:view.html.twig', array(
       'advert' => $advert,
-      'listComments' => $advert->getComments()
+      'listComments' => $advert->getComments(),
     ));
   }
   /**
@@ -65,11 +96,10 @@ class AdvertController extends Controller
 
     $user = $this->getUser();
     $advert = new Advert();
+    $advert->setAuthor($this->getUser()->getUsername());
     $advert->setDate(new \Datetime());
 
     $form = $this->get('form.factory')->create(AdvertType::class, $advert);
-    $form->get('author')->setData($user->getUsername());
-
 
     if ($request->isMethod('POST')) {
     
