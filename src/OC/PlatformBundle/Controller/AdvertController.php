@@ -24,7 +24,7 @@ class AdvertController extends Controller
       throw new NotFoundHttpException('Page "'.$page.'" inexistante.');
     }
 
-    $nbPerPages = 3;
+    $nbPerPages = 6;
 
     $em = $this->getDoctrine()->getManager();
     
@@ -53,9 +53,10 @@ class AdvertController extends Controller
     $comment->setDate(new \Datetime);
     $comment->setAdvert($advert);
     if($this->getUser() !== null ){
-      $comment->setAuthor($this->getUser()->getUsername());
-      $form = $this->get('form.factory')->create(CommentType::class, $comment);
+      $comment->setAuthor($this->getUser()->getUsername());  
     }
+
+    $form = $this->get('form.factory')->create(CommentType::class, $comment);
 
     if ($request->isMethod('POST')) {
     
@@ -74,17 +75,11 @@ class AdvertController extends Controller
     if(null === $advert){
       throw new NotFoundHttpException("L'annonce d'id " .$id. " n'existe pas.");
     }
-
-    if($this->getUser() !== null){
-      return $this->render('OCPlatformBundle:Advert:view.html.twig', array(
-        'advert' => $advert,
-        'listComments' => $advert->getComments(),
-        'form' => $form->createView()
-    ));
-    }    
+   
     return $this->render('OCPlatformBundle:Advert:view.html.twig', array(
       'advert' => $advert,
       'listComments' => $advert->getComments(),
+      'form' => $form->createView(),
     ));
   }
   /**

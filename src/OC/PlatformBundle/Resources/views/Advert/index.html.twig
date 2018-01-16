@@ -10,9 +10,9 @@
 
   <h2>Liste des annonces</h2>
 
-  <ul>
     {% for advert in listAdverts %}
-      <li>{% if advert.image != null %} 
+      <div class="well">
+      {% if advert.image != null %} 
         <img style="width:25%" src="{{ advert.image.url }}" alt="{{ advert.image.alt }}">
       {% endif %}
         <a href="{{ path('oc_platform_view', {'id': advert.id}) }}">
@@ -20,12 +20,9 @@
         </a>
         par {{ advert.author }},
         le {{ advert.date|date('d/m/Y') }}
-      </li>
-    {% else %}
-      <li>Pas (encore !) d'annonces</li>
+      </div>
     {% endfor %}
-  </ul>
-
+  
   <ul class="pagination">
     {% for p in range(1,nbPages) %}
       {% if nbPages != 0 %}
