@@ -63,4 +63,14 @@ class AdvertRepository extends \Doctrine\ORM\EntityRepository
 
 		return new Paginator($query, true);
 	}
+
+	public function getLastXAdverts($nb){
+		$qb = $this
+			->createQueryBuilder('a')
+			->orderBy('a.date', 'DESC')
+			->setMaxResults($nb);
+
+		return $qb->getQuery()
+				->getResult();
+	}
 }

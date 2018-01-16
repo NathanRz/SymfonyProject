@@ -132,13 +132,9 @@ class AdvertController extends Controller
   }
 
   public function menuAction($limit){
-    // On fixe en dur une liste ici, bien entendu par la suite
-    // on la récupérera depuis la BDD !
-    $listAdverts = array(
-      array('id' => 2, 'title' => 'Recherche développeur Symfony'),
-      array('id' => 5, 'title' => 'Mission de webmaster'),
-      array('id' => 9, 'title' => 'Offre de stage webdesigner')
-    );
+    $em = $this->getDoctrine()->getManager();
+
+    $listAdverts = $em->getRepository('OCPlatformBundle:Advert')->getLastXAdverts(3);
 
     return $this->render('OCPlatformBundle:Advert:menu.html.twig', array(
       // Tout l'intérêt est ici : le contrôleur passe
