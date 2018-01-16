@@ -9,6 +9,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -30,10 +31,10 @@ class AdvertType extends AbstractType
             ->add('content',  TextareaType::class)
             ->add('published',CheckboxType::class, array('required' => false))
             ->add('image',    ImageType::class)
-            ->add('categories', CollectionType::class, array(
-                'entry_type'    => CategoryType::class,
-                'allow_add'     => true,
-                'allow_delete'  => true
+            ->add('categories', EntityType::class, array(
+                'class'         => 'OCPlatformBundle:Category',
+                'choice_label'  => 'name',
+                'multiple'      => true
             ))
             ->add('save',     SubmitType::class);
     }

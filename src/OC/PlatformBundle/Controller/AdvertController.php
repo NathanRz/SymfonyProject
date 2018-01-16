@@ -53,7 +53,6 @@ class AdvertController extends Controller
     $comment->setDate(new \Datetime);
     $comment->setAdvert($advert);
     if($this->getUser() !== null ){
-      var_dump("hello");
       $comment->setAuthor($this->getUser()->getUsername());
       $form = $this->get('form.factory')->create(CommentType::class, $comment);
     }
