@@ -63,10 +63,13 @@ class AdvertController extends Controller
   public function addAction(Request $request)
   {
 
+    $user = $this->getUser();
     $advert = new Advert();
     $advert->setDate(new \Datetime());
 
     $form = $this->get('form.factory')->create(AdvertType::class, $advert);
+    $form->get('author')->setData($user->getUsername());
+
 
     if ($request->isMethod('POST')) {
     
