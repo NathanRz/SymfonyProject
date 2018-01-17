@@ -77,6 +77,11 @@ class Advert
     private $updatedAt;
 
     /**
+    * @ORM\Column(name="price", type="float")
+    */
+    private $price;
+
+    /**
     * @ORM\Column(name="nbComments", type="integer")
     */
     private $nbComments = 0;
@@ -353,5 +358,29 @@ class Advert
 
     public function decreaseComments(){
         $this->nbComments--;
+    }
+
+    /**
+     * Set price
+     *
+     * @param float $price
+     *
+     * @return Advert
+     */
+    public function setPrice($price)
+    {
+        $this->price = $price;
+
+        return $this;
+    }
+
+    /**
+     * Get price
+     *
+     * @return float
+     */
+    public function getPrice()
+    {
+        return $this->price;
     }
 }

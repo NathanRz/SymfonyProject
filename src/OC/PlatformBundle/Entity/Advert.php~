@@ -77,9 +77,14 @@ class Advert
     private $updatedAt;
 
     /**
+    * @ORM\Column(name="price", type="float")
+    */
+    private $price;
+
+    /**
     * @ORM\Column(name="nbComments", type="integer")
     */
-    private $nbComments;
+    private $nbComments = 0;
 
     public function __construct(){
         $this->date = new \Datetime();
@@ -321,5 +326,37 @@ class Advert
     */
     public function updateDate(){
         $this->setUpdatedAt(new \Datetime());
+    }
+
+    /**
+     * Set nbComments
+     *
+     * @param integer $nbComments
+     *
+     * @return Advert
+     */
+    public function setNbComments($nbComments)
+    {
+        $this->nbComments = $nbComments;
+
+        return $this;
+    }
+
+    /**
+     * Get nbComments
+     *
+     * @return integer
+     */
+    public function getNbComments()
+    {
+        return $this->nbComments;
+    }
+
+    public function increaseComments(){
+        $this->nbComments++;
+    }
+
+    public function decreaseComments(){
+        $this->nbComments--;
     }
 }

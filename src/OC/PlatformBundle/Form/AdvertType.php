@@ -17,7 +17,7 @@ use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use OC\PlatformBundle\Form\ImageType;
 use OC\PlatformBundle\Form\CategoryType;
-
+use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 class AdvertType extends AbstractType
 {
     /**
@@ -36,6 +36,7 @@ class AdvertType extends AbstractType
                 'choice_label'  => 'name',
                 'multiple'      => true
             ))
+            ->add('price', MoneyType::class)
             ->add('save',     SubmitType::class);
     }
 

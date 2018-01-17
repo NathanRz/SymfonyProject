@@ -39,6 +39,8 @@
 	{{ form_row(form.categories)}}
 	{#<a href="#" id="add_category" class="btn btn-default">Ajouter une catégorie</a>#}
 
+	{{ form_row(form.price)}}
+
 	{{ form_widget(form.save, {'attr': {'class': 'btn btn-primary'}}) }}
 
 	{{ form_rest(form) }}
