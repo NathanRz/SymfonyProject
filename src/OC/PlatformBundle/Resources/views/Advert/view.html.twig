@@ -7,12 +7,25 @@
 {% endblock %}
 
 {% block ocplatform_body %}
+    <div class="row">
+      <div style="width:20%"class="col-sm-4">
+        {% if advert.image is not null %}
+          <div  class="frontpage_square">
+              <img  src="{{ advert.image.url }}" class="img-responsive" alt="{{ advert.image.alt }}" />
+          </div>
+        {% endif %}
+      </div>
+      <div class="col-sm-5">
+        <h2>{{ advert.title }}</h2>
+        <i>Par {{ advert.author }}, le {{ advert.date|date('d/m/Y') }}</i>
+      </div>
+      <div style="text-align:center" class="col-sm-3">
+        <h2 style="">{{ advert.price }} €</h2>
+      </div>
 
-  {% if advert.image is not null %}
-  <img style="width:15%"src="{{ advert.image.url }}" alt="{{ advert.image.alt }}">
-{% endif %}
-  <h2>{{ advert.title }}</h2>
-  <i>Par {{ advert.author }}, le {{ advert.date|date('d/m/Y') }}</i>
+    </div>
+  <br/>
+  
 
   <div class="well">
     {{ advert.content }}

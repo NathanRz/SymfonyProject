@@ -11,15 +11,22 @@
   <h2>Liste des annonces</h2>
 
     {% for advert in listAdverts %}
-      <div class="well">
-      {% if advert.image != null %} 
-        <img style="width:25%" src="{{ advert.image.url }}" alt="{{ advert.image.alt }}">
+      <div  class="well">
+        <div class="row">
+      {% if advert.image != null %}
+          <div style="height:100%;text-align:center;vertical-align:middle" class="col-sm-3">
+            <img style="width:100%" src="{{ advert.image.url }}" alt="{{ advert.image.alt }}">
+          </div>
       {% endif %}
-        <a href="{{ path('oc_platform_view', {'id': advert.id}) }}">
-          {{ advert.title }}
-        </a>
-        par {{ advert.author }},
-        le {{ advert.date|date('d/m/Y') }}
+          <div class="col-sm-5">
+            <a href="{{ path('oc_platform_view', {'id': advert.id}) }}"><h4>{{ advert.title }}</h4></a>
+            <p>par {{ advert.author }},
+            le {{ advert.date|date('d/m/Y') }}</p>
+          </div>
+          <div style="height:100%;vertical-align:middle;text-align:center"class="col-sm-4">
+            <h2>{{ advert.price }} €</h2>
+          </div>
+        </div>
       </div>
     {% endfor %}
   
