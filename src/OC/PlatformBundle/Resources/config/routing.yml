@@ -7,13 +7,18 @@ oc_platform_home:
         page:        1
     requirements:
         page: \d*
-    
+
 oc_platform_view:
     path:      /advert/{id}
     defaults:
         _controller: OCPlatformBundle:Advert:view
     requirements:
         id: \d+
+
+oc_platform_admin:
+    path:       /admin
+    defaults:
+        _controller: OCPlatformBundle:Advert:admin 
 
 oc_platform_add:
     path:      /add

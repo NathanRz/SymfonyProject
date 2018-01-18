@@ -1,0 +1,28 @@
+{% extends "OCPlatformBundle::layout.html.twig" %}
+
+{% block title %}
+  Administration des categories - {{ parent() }}
+{% endblock %}
+
+{% block ocplatform_body %}
+
+  <h2>Administration</h2>
+  <div class="well">
+  	<h3>Categories existantes</h3>
+  	<ul>
+  	{% for cat in categories %}
+  		<li>{{cat.name}}</li>
+  	{% endfor %}
+  	</ul>
+  </div>
+
+  {{ include("OCPlatformBundle:Advert:formAddCat.html.twig") }}
+
+  <p>
+    <a href="{{ path('oc_platform_home') }}" class="btn btn-default">
+      <i class="glyphicon glyphicon-chevron-left"></i>
+      Retour à l'index
+    </a>
+  </p>
+
+{% endblock %}

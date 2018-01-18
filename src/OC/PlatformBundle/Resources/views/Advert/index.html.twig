@@ -7,7 +7,7 @@
 {% endblock %}
 
 {% block ocplatform_body %}
-
+  {{ include("OCPlatformBundle:Advert:formFilter.html.twig") }}
   <h2>Liste des annonces</h2>
 
     {% for advert in listAdverts %}

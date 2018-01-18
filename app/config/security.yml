@@ -2,7 +2,8 @@
 # https://symfony.com/doc/current/security.html
 security:
     role_hierarchy:
-        ROLE_ADMIN: [ROLE_AUTHOR, ROLE_MODERATOR]
+        ROLE_MODERATOR: [ROLE_AUTHOR]
+        ROLE_ADMIN: [ROLE_MODERATOR]
         ROLE_SUPER_ADMIN: [ROLE_ADMIN, ROLE_ALLOWED_TO_SWITCH]
     access_control:
         - {path: ^/admin, roles: ROLE_ADMIN}
@@ -11,11 +12,6 @@ security:
             OC\UserBundle\Entity\User: sha512
     # https://symfony.com/doc/current/security.html#b-configuring-how-users-are-loaded
     providers:
-        in_memory:
-            memory:
-                users:
-                    user:  { password: userpass, roles: [ 'ROLE_AUTHOR' ] }
-                    admin: { password: adminpass, roles: [ 'ROLE_ADMIN' ] }
         main:
             id: fos_user.user_provider.username
 

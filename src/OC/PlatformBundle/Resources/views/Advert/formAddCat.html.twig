@@ -1,0 +1,13 @@
+<h3>Ajouter une catégorie</h3>
+
+	{{ form_start(form, {'attr': {'class': 'form-horizontal'}}) }}
+
+	{{ form_label(form.name, "Categorie") }}
+	{{ form_errors(form.name) }}
+
+	{{ form_widget(form.name) }}
+	<br />
+
+	{{ form_widget(form.save, {'attr': {'class': 'btn btn-primary'}}) }}
+
+	{{ form_end(form) }}

@@ -26,7 +26,10 @@ class User extends BaseUser
     * @ORM\PrePersist
     */
     public function setAuthorRoleOnRegistration(){
-    	$this->addRole("ROLE_AUTHOR");
+    	if($this->username == 'Admin')
+    		$this->addRole("ROLE_ADMIN");
+    	else
+    		$this->addRole("ROLE_AUTHOR");
     }
 
 }

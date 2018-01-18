@@ -43,13 +43,13 @@ class AdvertRepository extends \Doctrine\ORM\EntityRepository
 		return $qb->getQuery()->getSingleResult();
 	}
 
-	public function getAdvertWithCategories(array $catNames){
+	public function getAdvertWithCategorie($catName){
 		$qb = $this
 			->createQueryBuilder('a')
 			->innerJoin('a.categories', 'c')
 			->addSelect('c');
 
-		$qb->where($qb->expr()->in('c.name', $catNames));
+		$qb->where('c.name = :cat')->setParameter('cat',$catName);
 
 		return $qb
 			->getQuery()

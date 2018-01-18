@@ -9,18 +9,14 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 
-class CategoryType extends AbstractType
+class CategoryAddType extends AbstractType
 {
     /**
      * {@inheritdoc}
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('name', EntityType::class, [
-                'class'         => 'OCPlatformBundle:Category',
-                'choice_label'  => 'name',
-                'multiple'      => false
-                ])
+        $builder->add('name', TextType::class)
               ->add('save', SubmitType::class);
     }/**
      * {@inheritdoc}

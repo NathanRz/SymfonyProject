@@ -6,9 +6,14 @@ namespace OC\PlatformBundle\Controller;
 use OC\PlatformBundle\Entity\Advert;
 use OC\PlatformBundle\Entity\Image;
 use OC\PlatformBundle\Entity\Comment;
+use OC\PlatformBundle\Entity\Category;
 
 use OC\PlatformBundle\Form\AdvertType;
 use OC\PlatformBundle\Form\CommentType;
+use OC\PlatformBundle\Form\CategoryType;
+use OC\PlatformBundle\Form\CategoryAddType;
+
+use Symfony\Component\Form\Extension\Core\Type\FormType;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
@@ -18,15 +23,36 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 class AdvertController extends Controller
 {
-  public function indexAction($page)
+  public function indexAction($page, Request $request)
   {
+
     if ($page < 1) {
       throw new NotFoundHttpException('Page "'.$page.'" inexistante.');
     }
+    $categoryFilter = new Category();
+    $form = $this->get('form.factory')->create(CategoryType::class, $categoryFilter);
+
+    $em = $this->getDoctrine()->getManager();
 
     $nbPerPages = 6;
 
-    $em = $this->getDoctrine()->getManager();
+    if ($request->isMethod('POST')) {
+    
+      $form->handleRequest($request);
+
+      if($form->isValid()){
+        $listAdverts = $em->getRepository('OCPlatformBundle:Advert')->getAdvertWithCategorie($categoryFilter->getName()->getName());
+
+        $nbPages = ceil(count($listAdverts) / $nbPerPages);
+      }
+
+      return $this->render('OCPlatformBundle:Advert:index.html.twig', array(
+        'listAdverts' => $listAdverts,
+        'nbPages' => $nbPages,
+        'page' => $page,
+        'form' => $form->createView(),
+      ));
+    }
     
     $listAdverts = $em->getRepository('OCPlatformBundle:Advert')->getAdverts($page,$nbPerPages);
 
@@ -39,7 +65,8 @@ class AdvertController extends Controller
    	return $this->render('OCPlatformBundle:Advert:index.html.twig', array(
       'listAdverts' => $listAdverts,
       'nbPages' => $nbPages,
-      'page' => $page
+      'page' => $page,
+      'form' => $form->createView(),
     ));
   }
 
@@ -164,6 +191,35 @@ class AdvertController extends Controller
       // Tout l'intérêt est ici : le contrôleur passe
       // les variables nécessaires au template !
       'listAdverts' => $listAdverts
+    ));
+  }
+
+  /**
+  * @Security("has_role('ROLE_ADMIN')")
+  */
+  public function adminAction(Request $request){
+    $em = $this->getDoctrine()->getManager();
+    $category = new Category();
+    $categories = $em->getRepository('OCPlatformBundle:Category')->findAll();
+    $form = $this->get('form.factory')->create(CategoryAddType::class, $category);
+
+    if ($request->isMethod('POST')) {
+    
+      $form->handleRequest($request);
+
+      if($form->isValid()){
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($category);
+        $em->flush();
+      }
+      $request->getSession()->getFlashBag()->add('notice', 'Catégorie bien ajoutée.');
+
+      return $this->redirectToRoute('oc_platform_admin');
+    }
+
+    return $this->render('OCPlatformBundle:Advert:admin.html.twig', array(
+      'categories' => $categories,
+      'form' => $form->createView()
     ));
   }
 }
